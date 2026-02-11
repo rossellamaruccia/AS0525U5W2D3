@@ -24,6 +24,9 @@ public class Blog {
     @ManyToOne
     private Author author;
 
+    public Blog() {
+    }
+
     public Blog(String title, String category, String content, double readingTime, Author author) {
         this.category = category;
         this.title = title;

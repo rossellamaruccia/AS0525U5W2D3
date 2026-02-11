@@ -25,6 +25,9 @@ public class Author {
     public LocalDate birthDate;
     public String avatarUrl;
 
+    public Author() {
+    }
+
     public Author(String name, String surname, String email, LocalDate date) {
         this.name = name;
         this.surname = surname;

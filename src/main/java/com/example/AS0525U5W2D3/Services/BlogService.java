@@ -34,8 +34,7 @@ public class BlogService {
     public Blog saveBlog(NewBlogPayload payload) {
         Optional optional = this.authorRepository.findById(payload.getAuthorId());
         if (optional.isPresent()) {
-            Author author = (Author) optional.get();
-            Blog newBlog = new Blog(payload.getTitle(), payload.getCategory(), payload.getContent(), payload.getReadingTime(), author);
+            Blog newBlog = new Blog(payload.getTitle(), payload.getCategory(), payload.getContent(), payload.getReadingTime(), (Author) optional.get());
             newBlog.setCover("https://ui.avatars.com/api?title=" + payload.getTitle());
             this.blogsDB.add(newBlog);
             this.blogRepository.save(newBlog);
