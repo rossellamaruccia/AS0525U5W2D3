@@ -2,9 +2,7 @@ package com.example.AS0525U5W2D3.Services;
 
 import com.example.AS0525U5W2D3.Entities.Author;
 import com.example.AS0525U5W2D3.Entities.Blog;
-import com.example.AS0525U5W2D3.NotFoundException;
 import com.example.AS0525U5W2D3.Payloads.NewBlogPayload;
-import com.example.AS0525U5W2D3.Repositories.AuthorRepository;
 import com.example.AS0525U5W2D3.Repositories.BlogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,19 +10,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
 public class BlogService {
     private BlogRepository blogRepository;
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
     private List<Blog> blogsDB = new ArrayList<>();
 
     @Autowired
-    public BlogService(BlogRepository blogRepository, AuthorRepository authorRepository) {
+    public BlogService(BlogRepository blogRepository, AuthorService authorService) {
         this.blogRepository = blogRepository;
-        this.authorRepository = authorRepository;
+        this.authorService = authorService;
     }
 
     public List<Blog> findAll() {
@@ -32,15 +29,13 @@ public class BlogService {
     }
 
     public Blog saveBlog(NewBlogPayload payload) {
-        Optional optional = this.authorRepository.findById(payload.getAuthorId());
-        if (optional.isPresent()) {
-            Blog newBlog = new Blog(payload.getTitle(), payload.getCategory(), payload.getContent(), payload.getReadingTime(), (Author) optional.get());
-            newBlog.setCover("https://ui.avatars.com/api?title=" + payload.getTitle());
-            this.blogsDB.add(newBlog);
-            this.blogRepository.save(newBlog);
-            log.info("il blog " + newBlog.getId() + " è stato aggiunto");
-            return newBlog;
-        } else throw new NotFoundException(payload.getAuthorId());
+        Author author = this.authorService.findById(payload.getAuthorId());
+        Blog newBlog = new Blog(payload.getTitle(), payload.getCategory(), payload.getContent(), payload.getReadingTime(), author);
+        newBlog.setCover("https://ui.avatars.com/api?title=" + payload.getTitle());
+        this.blogsDB.add(newBlog);
+        this.blogRepository.save(newBlog);
+        log.info("il blog " + newBlog.getId() + " è stato aggiunto");
+        return newBlog;
     }
 
     public Blog findById(long blogId) {

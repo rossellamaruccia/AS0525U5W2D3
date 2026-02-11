@@ -1,6 +1,7 @@
 package com.example.AS0525U5W2D3.Services;
 
 import com.example.AS0525U5W2D3.Entities.Author;
+import com.example.AS0525U5W2D3.NotFoundException;
 import com.example.AS0525U5W2D3.Payloads.NewAuthorPayload;
 import com.example.AS0525U5W2D3.Repositories.AuthorRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,6 +39,12 @@ public class AuthorService {
         return newAuthor;
     }
 
+    public Author findById(UUID authorId) {
+        Optional<Author> optional = this.authorRepository.findById(authorId);
+        if (optional.isPresent()) return (Author) optional.get();
+        else throw new NotFoundException(authorId);
+    }
+
     public Page<Author> findAll(int page, int size, String orderBy, String sortCriteria) {
         if (size > 100 || size < 0) size = 10;
         if (page < 0) page = 0;
@@ -45,16 +53,6 @@ public class AuthorService {
         return this.authorRepository.findAll(pageable);
     }
 
-    public Author findById(UUID authorId) {
-        Author found = null;
-        for (Author author : this.authorRepository.findAll()) {
-            if (author.getId() == authorId) {
-                found = author;
-            }
-            if (found == null) log.info("Autore non trovato!");
-        }
-        return found;
-    }
 
     public Author findByIdAndUpdate(UUID authorId, NewAuthorPayload payload) {
         Author found = null;
