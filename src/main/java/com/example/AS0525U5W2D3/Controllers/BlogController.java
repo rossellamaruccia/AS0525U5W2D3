@@ -1,8 +1,8 @@
 package com.example.AS0525U5W2D3.Controllers;
 
-import com.example.S0525U5W2D2.Entities.Blog;
-import com.example.S0525U5W2D2.Payloads.NewBlogPayload;
-import com.example.S0525U5W2D2.Services.BlogService;
+import com.example.AS0525U5W2D3.Entities.Blog;
+import com.example.AS0525U5W2D3.Payloads.NewBlogPayload;
+import com.example.AS0525U5W2D3.Services.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class BlogController {
     }
 
     @GetMapping("/{blogId}")
-    public Blog getBlogById(@PathVariable int blogId) {
+    public Blog getBlogById(@PathVariable long blogId) {
         return this.blogService.findById(blogId);
     }
 
@@ -37,13 +37,13 @@ public class BlogController {
     }
 
     @PutMapping("/{blogId}")
-    public Blog getBlogByIdAndUpdate(@PathVariable int blogId, @RequestBody NewBlogPayload payload) {
+    public Blog getBlogByIdAndUpdate(@PathVariable long blogId, @RequestBody NewBlogPayload payload) {
         return this.blogService.findByIdAndUpdate(blogId, payload);
     }
 
     @DeleteMapping("/{blogId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void getByIdAndDelete(@PathVariable int blogId) {
+    public void getByIdAndDelete(@PathVariable long blogId) {
         this.blogService.findByIdAndDelete(blogId);
     }
 }

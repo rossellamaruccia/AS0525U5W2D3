@@ -1,13 +1,14 @@
 package com.example.AS0525U5W2D3.Controllers;
 
-import com.example.S0525U5W2D2.Entities.Author;
-import com.example.S0525U5W2D2.Payloads.NewAuthorPayload;
-import com.example.S0525U5W2D2.Services.AuthorService;
+import com.example.AS0525U5W2D3.Entities.Author;
+import com.example.AS0525U5W2D3.Payloads.NewAuthorPayload;
+import com.example.AS0525U5W2D3.Services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/authors")
@@ -26,7 +27,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{authorId}")
-    public Author getAuthorById(@PathVariable int authorId) {
+    public Author getAuthorById(@PathVariable UUID authorId) {
         return this.authorService.findById(authorId);
     }
 
@@ -37,13 +38,13 @@ public class AuthorController {
     }
 
     @PutMapping("/{authorId}")
-    public Author getAuthorByIdAndUpdate(@PathVariable int authorId, @RequestBody NewAuthorPayload payload) {
+    public Author getAuthorByIdAndUpdate(@PathVariable UUID authorId, @RequestBody NewAuthorPayload payload) {
         return this.authorService.findByIdAndUpdate(authorId, payload);
     }
 
     @DeleteMapping("/{authorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void getByIdAndDelete(@PathVariable int authorId) {
+    public void getByIdAndDelete(@PathVariable UUID authorId) {
         this.authorService.findByIdAndDelete(authorId);
     }
 }

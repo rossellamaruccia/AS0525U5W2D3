@@ -1,65 +1,77 @@
 package com.example.AS0525U5W2D3.Services;
 
-import com.example.S0525U5W2D2.Entities.Author;
-import com.example.S0525U5W2D2.Payloads.NewAuthorPayload;
+import com.example.AS0525U5W2D3.Entities.Author;
+import com.example.AS0525U5W2D3.Payloads.NewAuthorPayload;
+import com.example.AS0525U5W2D3.Repositories.AuthorRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class AuthorService {
 
-    private List<Author> authorsDB = new ArrayList<>();
+    private final AuthorRepository authorRepository;
 
-    public List<Author> findAll() {
-        return this.authorsDB;
+    @Autowired
+    public AuthorService(AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
     }
 
     public Author saveAuthor(NewAuthorPayload payload) {
+
+//        this.authorRepository.findByEmail(payload.getEmail()).ifPresent(( author -> {
+//            throw new BadRequestException("L'email " + author.getEmail() + " è già in uso!");
+//        });
+
         Author newAuthor = new Author(payload.getName(), payload.getSurname(), payload.getEmail(), payload.getBirthDate());
-        this.authorsDB.add(newAuthor);
+        newAuthor.setAvatarUrl("https://ui.avatars.com/api?name=" + payload.getName() + "+" + payload.getSurname());
+        this.authorRepository.save(newAuthor);
         log.info("l'autore " + newAuthor.getId() + " è stato aggiunto");
         return newAuthor;
     }
 
-    public Author findById(int authorId) {
+    public List<Author> findAll() {
+        return this.authorRepository.findAll();
+    }
+
+    public Author findById(UUID authorId) {
         Author found = null;
-        for (Author blog : authorsDB) {
-            if (blog.getId() == authorId) {
-                found = blog;
+        for (Author author : this.authorRepository.findAll()) {
+            if (author.getId() == authorId) {
+                found = author;
             }
             if (found == null) log.info("Autore non trovato!");
         }
         return found;
     }
 
-    public Author findByIdAndUpdate(int authorId, NewAuthorPayload payload) {
+    public Author findByIdAndUpdate(UUID authorId, NewAuthorPayload payload) {
         Author found = null;
-        for (Author author : this.authorsDB) {
+        for (Author author : this.authorRepository.findAll()) {
             if (author.getId() == authorId) {
                 found = author;
                 found.setName(payload.getName());
                 found.setSurname(payload.getSurname());
                 found.setEmail(payload.getEmail());
                 found.setBirthDate(payload.getBirthDate());
-                found.setAvatar(payload.getAvatar());
             }
         }
         if (found == null) log.info("Autore non trovato");
         return found;
     }
 
-    public void findByIdAndDelete(int authorId) {
+    public void findByIdAndDelete(UUID authorId) {
         Author found = null;
-        for (Author author : this.authorsDB) {
+        for (Author author : this.authorRepository.findAll()) {
             if (author.getId() == authorId) {
                 found = author;
             }
             if (found == null) log.info("Autore non trovato");
         }
-        this.authorsDB.remove(found);
+        this.authorRepository.findAll().remove(found);
     }
 }

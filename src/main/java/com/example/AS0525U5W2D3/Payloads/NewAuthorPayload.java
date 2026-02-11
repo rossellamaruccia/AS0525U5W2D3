@@ -10,10 +10,8 @@ import java.time.LocalDate;
 @ToString
 @AllArgsConstructor
 public class NewAuthorPayload {
-    public int id;
-    public String name;
-    public String surname;
-    public String email;
-    public LocalDate birthDate;
-    public String avatar;
+    private String name;
+    private String surname;
+    private String email;
+    private LocalDate birthDate;
 }
